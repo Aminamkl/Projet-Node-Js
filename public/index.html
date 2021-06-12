@@ -34,30 +34,76 @@
       <thead>
       <tr>
         <th>ID</th>
+        <th>USERNAME</th>
         <th>EMAIL</th>
-        <th>ROLE</th>
         <th>Password</th>
         <th></th>
         <th></th>
       </tr>
       </thead>
-      <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-            <form action="" method="POST" onsubmit="return confirm('Etes-vous sur de vouloir supprimer!')">
-              <button  class="btn btn-danger"> X </button>
-              </form>
-            </td>
-            <td><a href="" class="btn btn-success">E</a></td>
-          </tr>
+      <tbody id="data">
+        
       </tbody>
   
     </table>
-    </div>
+  </div>
+
+  <script>
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", "data.php", true);
+    ajax.send();
+ 
+    ajax.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            console.log(data);
+ 
+            var html = "";
+            for(var a = 0; a < data.length; a++) {
+                var id = data[a].id;
+                var username = data[a].username;
+                var email = data[a].email;
+                var password = data[a].password;
+ 
+                html += "<tr>";
+                    html += "<td>" + id + "</td>";
+                    html += "<td>" + username + "</td>";
+                    html += "<td>" + email + "</td>";
+                    html += "<td>" + password + "</td>";
+                    html += "<td> <form action='' method='POST' onsubmit='return confirm('Etes-vous sur de vouloir supprimer!')'><button  class='btn btn-danger'> X </button></form> </td>";
+                    html += "<td> <a href='' class='btn btn-success'>E</a> </td>";
+                html += "</tr>";
+            }
+            document.getElementById("data").innerHTML += html;
+        }
+    }; 
+
+    $(document).ready(function(){
+      $("#save").click(function(){
+        var username = $("#username").val();
+        var email = $("#email").val();
+        var password = $("#password").val();
+
+        $.ajax({
+          url : "server.php",
+          type : "post",
+          async : false,
+          data :{
+            "done" :1,
+            "username" :username,
+            "email" : email,
+            "password" : password
+          },
+          success : function(data){
+
+          }
+        });
+      });
+
+    });
+  </script>
+
 </body>
 
 </html>
+
