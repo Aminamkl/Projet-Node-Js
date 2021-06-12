@@ -1,0 +1,18 @@
+var express 		= require('express')
+var Router 			= require('./routes/router')
+var authMiddleware 	= require('./middlewares/auth')
+var app 			= express()
+
+// console.log(Router);
+
+app.use(express.urlencoded({extended:true}))
+app.use(express.json())
+
+
+app.use(Router.public);
+app.use(authMiddleware, Router.private);
+
+
+app.listen(8000, function(){
+	console.log("App started in port 8000");
+})
