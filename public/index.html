@@ -1,111 +1,120 @@
-<html>
-
-<head>
-  <title>Node JS</title>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-</head>
-
-<body>
-  <div class="container">
-
-    <h1>Liste des utilisateurs</h1>
-  
-  
-    <br>
-    <form action="" class="">
-      <input type="text" id="username" class="form-control" placeholder="Username"> <br>
-      <input type="email" id="email" class="form-control" placeholder="Email"> <br>
-      <input type="password" id="password" class="form-control" placeholder="Password"> <br>
-      <select id="role" class="form-control" required>
-        <option value="">Choisissez un role</option>
-        <option value="guest">Guest</option>
-        <option value="author">Author</option>
-        <option value="admin">Admin</option>
-      </select> <br>
-      <button  class="btn btn-primary" id="save">Ajouter</button>
-    </form>
-  
-    <br>
-    <table class="table table-bordered table-striped">
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>USERNAME</th>
-        <th>EMAIL</th>
-        <th>Password</th>
-        <th></th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody id="data">
-        
-      </tbody>
-  
-    </table>
-  </div>
-
-  <script>
-    var ajax = new XMLHttpRequest();
-    ajax.open("GET", "data.php", true);
-    ajax.send();
- 
-    ajax.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var data = JSON.parse(this.responseText);
-            console.log(data);
- 
-            var html = "";
-            for(var a = 0; a < data.length; a++) {
-                var id = data[a].id;
-                var username = data[a].username;
-                var email = data[a].email;
-                var password = data[a].password;
- 
-                html += "<tr>";
-                    html += "<td>" + id + "</td>";
-                    html += "<td>" + username + "</td>";
-                    html += "<td>" + email + "</td>";
-                    html += "<td>" + password + "</td>";
-                    html += "<td> <form action='' method='POST' onsubmit='return confirm('Etes-vous sur de vouloir supprimer!')'><button  class='btn btn-danger'> X </button></form> </td>";
-                    html += "<td> <a href='' class='btn btn-success'>E</a> </td>";
-                html += "</tr>";
-            }
-            document.getElementById("data").innerHTML += html;
-        }
-    }; 
-
-    $(document).ready(function(){
-      $("#save").click(function(){
-        var username = $("#username").val();
-        var email = $("#email").val();
-        var password = $("#password").val();
-        var role = $("#role").val();
-
-        $.ajax({
-          url : "server.php",
-          type : "post",
-          async : false,
-          data :{
-            "done" :1,
-            "username" :username,
-            "email" : email,
-            "password" : password,
-            "role" : role
-            
-          },
-          success : function(data){
-
-          }
-        });
-      });
-
-    });
-  </script>
-
-</body>
-
-</html>
+<html>  
+      <head>  
+           <title>Users Managemant</title>  
+           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />  
+           <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+      </head>  
+      <body>  
+           <div class="container">  
+                <br />  
+                <br />  
+                <br />  
+                <div class="table-responsive">  
+                  <h1>Liste des utilisateurs</h1>  
+                  <br>
+                  <div id="live_data"></div>                 
+                </div>  
+           </div>  
+      </body>  
+ </html>  
+ <script>  
+ $(document).ready(function(){  
+      function fetch_data()  
+      {  
+           $.ajax({  
+                url:"select.php",  
+                method:"POST",  
+                success:function(data){  
+                     $('#live_data').html(data);  
+                }  
+           });  
+      }  
+      fetch_data();  
+      $(document).on('click', '#btn_add', function(){  
+           var username = $('#username').text();  
+           var email = $('#email').text(); 
+           var password = $('#password').text();
+           var role = $('#role').text(); 
+           if(username == '')  
+           {  
+                alert("Enter UserName");  
+                return false;  
+           }  
+           if(email == '')  
+           {  
+                alert("Enter Email");  
+                return false;  
+           }  
+           if(password == '')  
+           {  
+                alert("Enter Password");  
+                return false;  
+           }  
+           if(role == '')  
+           {  
+                alert("Enter Role");  
+                return false;  
+           }  
+           $.ajax({  
+                url:"insert.php",  
+                method:"POST",  
+                data:{username:username, email:email, password:password, role:role},  
+                dataType:"text",  
+                success:function(data)  
+                {  
+                  alert(data);  
+                  etch_data();  
+                }  
+           })  
+      });  
+      function edit_data(id, text, column_name)  
+      {  
+           $.ajax({  
+                url:"edit.php",  
+                method:"POST",  
+                data:{id:id, text:text, column_name:column_name},  
+                dataType:"text",  
+                success:function(data){  
+                     alert(data);  
+                }  
+           });  
+      }  
+      $(document).on('blur', '.username', function(){  
+           var id = $(this).data("id1");  
+           var username = $(this).text();  
+           edit_data(id, username, "username");  
+      });  
+      $(document).on('blur', '.email', function(){  
+           var id = $(this).data("id2");  
+           var email = $(this).text();  
+           edit_data(id,email, "email");  
+      });  
+      $(document).on('blur', '.password', function(){  
+           var id = $(this).data("id3");  
+           var password = $(this).text();  
+           edit_data(id,password, "password");  
+      }); 
+      $(document).on('blur', '.role', function(){  
+           var id = $(this).data("id4");  
+           var role = $(this).text();  
+           edit_data(id,role, "role");  
+      }); 
+      $(document).on('click', '.btn_delete', function(){  
+           var id=$(this).data("id5");  
+           if(confirm("Are you sure you want to delete this?"))  
+           {  
+                $.ajax({  
+                     url:"del.php",  
+                     method:"POST",  
+                     data:{id:id},  
+                     dataType:"text",  
+                     success:function(data){  
+                          alert(data);  
+                          fetch_data();  
+                     }  
+                });  
+           }  
+      });  
+ });  
+ </script>
