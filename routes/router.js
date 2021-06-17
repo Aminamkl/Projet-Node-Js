@@ -1,7 +1,7 @@
 var privateRouter 	= require("express").Router()
 var publicRouter 	= require("express").Router()
 
-require('./user')(privateRouter)
+require('./users')(privateRouter)
 
 // auth router
 require('./auth')(publicRouter)
