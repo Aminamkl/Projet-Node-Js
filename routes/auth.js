@@ -1,5 +1,5 @@
 
-var User 	= require ('../repositories/user');
+var User 	= require ('../respositories/user');
 var jwt 	= require('jsonwebtoken');
 
 module.exports = function (router) {
